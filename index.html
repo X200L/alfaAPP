@@ -440,20 +440,26 @@
     .voice-btn {
       position: fixed;
       right: 16px;
-      bottom: 88px; /* чуть выше нижней навигации */
-      width: 56px;
-      height: 56px;
+      bottom: 120px; /* выше чем было */
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       background-color: #ff3b30;
       color: #fff;
       border: none;
-      font-size: 24px;
+      font-size: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 1100;
       box-shadow: 0 6px 16px rgba(0,0,0,0.4);
       cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .voice-btn-icon { width: 22px; height: 22px; display: block; }
+    .voice-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
     }
     .voice-btn.listening {
       background-color: #00c853;
@@ -462,6 +468,124 @@
     }
     @keyframes pulse {
       to { box-shadow: 0 0 0 16px rgba(0,200,83,0); }
+    }
+
+    /* Модальное окно голосового ассистента */
+    .voice-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: flex-end;
+      z-index: 1300;
+    }
+    .voice-modal-overlay.show {
+      display: flex;
+      animation: fadeIn 0.3s ease-out;
+    }
+    .voice-modal {
+      background: #1c1c1c;
+      border-radius: 20px 20px 0 0;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 -8px 32px rgba(0,0,0,0.5);
+      transform: translateY(100%);
+      transition: transform 0.3s ease-out;
+      width: 100%;
+      max-height: 50vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .voice-modal-overlay.show .voice-modal {
+      transform: translateY(0);
+    }
+    .voice-modal::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 4px;
+      background: #555;
+      border-radius: 2px;
+    }
+    .voice-modal-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #ff3b30;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin: 16px auto 12px;
+      animation: bounce 2s infinite;
+    }
+    .voice-modal-icon.listening {
+      background: #00c853;
+      animation: pulse-large 1.5s infinite;
+    }
+    .voice-modal-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .voice-modal-subtitle {
+      font-size: 13px;
+      color: #aaa;
+      margin-bottom: 12px;
+    }
+    .voice-modal-text {
+      font-size: 14px;
+      color: #ddd;
+      background: #2d2d2d;
+      padding: 10px 12px;
+      border-radius: 10px;
+      min-height: 18px;
+      margin-bottom: 12px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .voice-modal-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .voice-btn-small {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 14px;
+    }
+    .voice-btn-small.secondary {
+      background: #2d2d2d;
+      color: #ddd;
+      border: 2px solid #333;
+    }
+    .voice-btn-small.primary {
+      background: #ff3b30;
+      color: #fff;
+    }
+    .voice-btn-small:hover {
+      transform: translateY(-1px);
+    }
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-8px); }
+      60% { transform: translateY(-4px); }
+    }
+    @keyframes pulse-large {
+      0% { box-shadow: 0 0 0 0 rgba(0,200,83,0.7); }
+      70% { box-shadow: 0 0 0 15px rgba(0,200,83,0); }
+      100% { box-shadow: 0 0 0 0 rgba(0,200,83,0); }
     }
     /* Модалка записи визита */
     .modal-overlay {
@@ -987,7 +1111,21 @@
   </div>
 
 
-  <button class="voice-btn" id="voiceBtn" title="Голосовой ассистент">🎤</button>
+  <button class="voice-btn" id="voiceBtn" title="Голосовой ассистент"><img src="micro1.png" alt="Голосовой ассистент" class="voice-modal-icon" id="voiceModalIcon"></button>
+
+  <!-- Модальное окно голосового ассистента -->
+  <div class="voice-modal-overlay" id="voiceModal">
+    <div class="voice-modal">
+      <img src="micro1.png" alt="Голосовой ассистент" class="voice-modal-icon" id="voiceModalIcon">
+      <div class="voice-modal-title" id="voiceModalTitle">Голосовой ассистент</div>
+      <div class="voice-modal-subtitle" id="voiceModalSubtitle">Скажите команду для навигации</div>
+      <div class="voice-modal-text" id="voiceModalText">Говорите...</div>
+      <div class="voice-modal-actions">
+        <button class="voice-btn-small secondary" id="voiceCancel">Отмена</button>
+        <button class="voice-btn-small primary" id="voiceStop" style="display:none;">Остановить</button>
+      </div>
+    </div>
+  </div>
    <div class="bottom-nav">
     <div class="nav-item">
       <a href="index.html"  class="nav-icon">🏠</a>
@@ -1095,33 +1233,116 @@
     // Голосовой ассистент (Web Speech API)
     (function(){
       const btn = document.getElementById('voiceBtn');
+      const modal = document.getElementById('voiceModal');
+      const modalIcon = document.getElementById('voiceModalIcon');
+      const modalTitle = document.getElementById('voiceModalTitle');
+      const modalSubtitle = document.getElementById('voiceModalSubtitle');
+      const modalText = document.getElementById('voiceModalText');
+      const cancelBtn = document.getElementById('voiceCancel');
+      const stopBtn = document.getElementById('voiceStop');
+      
       if (!btn) return;
       const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
       let recognition;
       let listening = false;
 
+      function openVoiceModal() {
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('show'), 10);
+      }
+
+      function closeVoiceModal() {
+        modal.classList.remove('show');
+        setTimeout(() => modal.style.display = 'none', 300);
+      }
+
+      function updateModalState(isListening, text = '') {
+        if (isListening) {
+          modalIcon.classList.add('listening');
+          modalTitle.textContent = 'Слушаю...';
+          modalSubtitle.textContent = 'Говорите команду';
+          modalText.textContent = text || 'Говорите...';
+          cancelBtn.style.display = 'none';
+          stopBtn.style.display = 'block';
+        } else {
+          modalIcon.classList.remove('listening');
+          modalTitle.textContent = 'Голосовой ассистент';
+          modalSubtitle.textContent = 'Скажите команду для навигации';
+          modalText.textContent = text || 'Говорите...';
+          cancelBtn.style.display = 'block';
+          stopBtn.style.display = 'none';
+        }
+      }
+
       function navigateByCommand(cmd) {
         const t = (cmd || '').toLowerCase();
-        if (t.includes('глав')) location.href = 'index.html';
-        else if (t.includes('платеж')) location.href = 'platezi.html';
-        else if (t.includes('выгод')) location.href = 'vigoda.html';
-        else if (t.includes('истор')) location.href = 'history.html';
-        else if (t.includes('чат')) location.href = 'chats.html';
-        else alert('Команда не распознана: ' + cmd);
+        if (t.includes('глав')) {
+          modalText.textContent = 'Переход на главную...';
+          setTimeout(() => location.href = 'index.html', 1000);
+        } else if (t.includes('платеж')) {
+          modalText.textContent = 'Переход к платежам...';
+          setTimeout(() => location.href = 'platezi.html', 1000);
+        } else if (t.includes('выгод')) {
+          modalText.textContent = 'Переход к выгоде...';
+          setTimeout(() => location.href = 'vigoda.html', 1000);
+        } else if (t.includes('истор')) {
+          modalText.textContent = 'Переход к истории...';
+          setTimeout(() => location.href = 'history.html', 1000);
+        } else if (t.includes('чат')) {
+          modalText.textContent = 'Переход к чатам...';
+          setTimeout(() => location.href = 'chats.html', 1000);
+        } else {
+          modalText.textContent = 'Команда не распознана: ' + cmd;
+          setTimeout(() => closeVoiceModal(), 2000);
+        }
       }
 
       if (SR) {
         recognition = new SR();
         recognition.lang = 'ru-RU';
-        recognition.interimResults = false;
+        recognition.interimResults = true;
         recognition.maxAlternatives = 1;
-        recognition.onresult = (e) => {
-          const text = e.results[0][0].transcript;
-          navigateByCommand(text);
+        
+        recognition.onstart = () => {
+          listening = true;
+          btn.classList.add('listening');
+          updateModalState(true);
         };
+
+        recognition.onresult = (e) => {
+          let finalTranscript = '';
+          let interimTranscript = '';
+
+          for (let i = e.resultIndex; i < e.results.length; i++) {
+            const transcript = e.results[i][0].transcript;
+            if (e.results[i].isFinal) {
+              finalTranscript += transcript;
+            } else {
+              interimTranscript += transcript;
+            }
+          }
+
+          if (interimTranscript) {
+            modalText.textContent = interimTranscript;
+          }
+
+          if (finalTranscript) {
+            modalText.textContent = 'Распознано: ' + finalTranscript;
+            navigateByCommand(finalTranscript);
+          }
+        };
+
+        recognition.onerror = (e) => {
+          console.error('Speech recognition error:', e.error);
+          modalText.textContent = 'Ошибка распознавания: ' + e.error;
+          setTimeout(() => closeVoiceModal(), 2000);
+        };
+
         recognition.onend = () => {
           listening = false;
           btn.classList.remove('listening');
+          updateModalState(false);
+          setTimeout(() => closeVoiceModal(), 1000);
         };
       } else {
         btn.addEventListener('click', () => {
@@ -1133,12 +1354,23 @@
       btn.addEventListener('click', () => {
         if (listening) {
           try { recognition.stop(); } catch(e) {}
-          listening = false;
-          btn.classList.remove('listening');
         } else {
-          try { recognition.start(); } catch(e) {}
-          listening = true;
-          btn.classList.add('listening');
+          openVoiceModal();
+          updateModalState(false);
+        }
+      });
+
+      cancelBtn.addEventListener('click', () => {
+        closeVoiceModal();
+      });
+
+      stopBtn.addEventListener('click', () => {
+        try { recognition.stop(); } catch(e) {}
+      });
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeVoiceModal();
         }
       });
     })();
