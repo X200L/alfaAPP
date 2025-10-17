@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Платежи</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #121212;
+      color: white;
+      padding: 0;
+      max-width: 400px;
+      margin: 0 auto;
+      overflow-x: hidden;
+    }
+
+    /* Статусбар */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background-color: #121212;
+      font-size: 14px;
+      border-bottom: 1px solid #333;
+    }
+
+    .status-bar .time { font-weight: bold; }
+    .status-bar .icons { display: flex; gap: 8px; }
+    .status-bar .icons span { font-size: 12px; }
+
+    /* Шапка */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      background-color: #121212;
+    }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .search-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #2d2d2d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    /* Блок "К оплате" */
+    .to-pay-card {
+      background-color: #2d2d2d;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 16px;
+      position: relative;
+    }
+
+    .to-pay-title {
+      font-size: 14px;
+      color: #aaa;
+      margin-bottom: 4px;
+    }
+
+    .to-pay-amount {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .discount-banner {
+      background-color: #1e3a1e;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    .app-icon {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background-color: #2d2d2d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: white;
+      overflow: hidden;
+    }
+
+    .badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background-color: #ff3b30;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    /* Быстрые платежи */
+    .quick-payments {
+      padding: 0 16px 16px;
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+    }
+
+    .quick-payment-item {
+      min-width: 100px;
+      background-color: #2d2d2d;
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+
+    .quick-payment-item:active {
+      transform: scale(0.98);
+    }
+
+    .quick-payment-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .quick-payment-icon.mts { background-color: #f00; }
+    .quick-payment-icon.jkh { background-color: #ffcc00; }
+    .quick-payment-icon.gai { background-color: #00cc00; }
+
+    .quick-payment-label {
+      font-size: 12px;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    /* Раздел "Платежи" */
+    .section-title {
+      padding: 16px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #ddd;
+    }
+
+    .payments-banner {
+      background-color: #2d2d2d;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 0 16px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+
+    .payments-banner:active {
+      transform: scale(0.98);
+    }
+
+    .emoji {
+      font-size: 24px;
+    }
+
+    .banner-text {
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    /* Список платежей */
+    .payments-list {
+      padding: 0 16px 16px;
+    }
+
+    .payment-item {
+      background-color: #2d2d2d;
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+
+    .payment-item:active {
+      transform: scale(0.98);
+    }
+
+    .payment-icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: white;
+    }
+
+    .payment-label {
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    /* Нижняя панель навигации */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #121212;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      border-top: 1px solid #333;
+      z-index: 1000;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 8px;
+      transition: color 0.2s;
+    }
+
+    .nav-item.active {
+      color: #007aff;
+    }
+
+    .nav-icon {
+      font-size: 20px;
+    }
+
+    .nav-label {
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background-color: #ff3b30;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    /* Прокрутка */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Шапка -->
+  <div class="header">
+    <div class="page-title">Платежи</div>
+    <div class="search-btn">🔍</div>
+  </div>
+
+  <!-- К оплате -->
+  <div class="to-pay-card">
+    <div class="to-pay-title">К оплате</div>
+    <div class="to-pay-amount">1 125 ₽</div>
+    <div class="discount-banner">Скидка на штраф до 22 октября</div>
+    <div class="app-icon">
+      🚗
+      <div class="badge">2</div>
+    </div>
+  </div>
+
+  <!-- Быстрые платежи -->
+  <div class="section-title">Быстрые платежи</div>
+  <div class="quick-payments">
+    <div class="quick-payment-item">
+      <div class="quick-payment-icon mts">M<br>T<br>C</div>
+      <div class="quick-payment-label">Мои платежи</div>
+    </div>
+    <div class="quick-payment-item">
+      <div class="quick-payment-icon jkh">🏠</div>
+      <div class="quick-payment-label">Счета ЖКУ Дом</div>
+    </div>
+    <div class="quick-payment-item">
+      <div class="quick-payment-icon gai">🚗</div>
+      <div class="quick-payment-label">Штрафы ГАИ Авто</div>
+    </div>
+  </div>
+
+  <!-- Баннер -->
+  <div class="payments-banner">
+    <div class="emoji">😍</div>
+    <div class="banner-text">Все платежи без комиссии</div>
+  </div>
+
+  <!-- Единый список платежей (вместо "Переводы" и "QR") -->
+  <div class="section-title">Платежи</div>
+  <div class="payments-list">
+    <div class="payment-item">
+      <div class="payment-icon">📷</div>
+      <div class="payment-label">Оплата по QR</div>
+    </div>
+    <div class="payment-item">
+      <div class="payment-icon">📱</div>
+      <div class="payment-label">Мобильная связь</div>
+    </div>
+    <div class="payment-item">
+      <div class="payment-icon">🎮</div>
+      <div class="payment-label">Игры</div>
+    </div>
+    <div class="payment-item">
+      <div class="payment-icon">🚇</div>
+      <div class="payment-label">Транспортные карты</div>
+    </div>
+    <div class="payment-item">
+      <div class="payment-icon">🛍️</div>
+      <div class="payment-label">Покупки и досуг</div>
+    </div>
+    <div class="payment-item">
+      <div class="payment-icon">📶</div>
+      <div class="payment-label">Интернет, телефон, ТВ</div>
+    </div>
+    <div class="payment-item">
+      <div class="payment-icon">🎓</div>
+      <div class="payment-label">Школы, вузы, детские сады</div>
+    </div>
+    <div class="payment-item">
+      <div class="payment-icon">🏡</div>
+      <div class="payment-label">Коммунальные услуги</div>
+    </div>
+    <div class="payment-item">
+      <div class="payment-icon">⬇️</div>
+      <div class="payment-label">Запрос денег</div>
+    </div>
+  </div>
+
+  <!-- Нижняя навигация -->
+  <div class="bottom-nav">
+    <div class="nav-item">
+      <a href="index.html" class="nav-icon">🏠</a>
+      <div class="nav-label">Главная</div>
+    </div>
+    <div class="nav-item active">
+      <a href="platezi.html" class="nav-icon">💸</a>
+      <div class="nav-label">Платежи</div>
+      <div class="badge">2</div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">❤️</div>
+      <div class="nav-label">Выгода</div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">⏱️</div>
+      <div class="nav-label">История</div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">💬</div>
+      <div class="nav-label">Чаты</div>
+    </div>
+  </div>
+
+  <script>
+    // Активация вкладки "Платежи"
+    document.querySelector('.nav-item:nth-child(2)').classList.add('active');
+
+    // Быстрые платежи
+    document.querySelectorAll('.quick-payment-item').forEach(item => {
+      item.addEventListener('click', () => {
+        alert('Переход к оплате: ' + item.querySelector('.quick-payment-label').innerText);
+      });
+    });
+
+    // Список платежей
+    document.querySelectorAll('.payment-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const label = item.querySelector('.payment-label').innerText;
+        alert('Открытие: ' + label);
+      });
+    });
+
+    // Баннер
+    document.querySelector('.payments-banner').addEventListener('click', () => {
+      alert('Все платежи без комиссии — подробнее');
+    });
+
+    // Поиск
+    document.querySelector('.search-btn').addEventListener('click', () => {
+      alert('Поиск по платежам');
+    });
+
+    // Прокрутка быстрых платежей
+    const quickPayments = document.querySelector('.quick-payments');
+    let startX;
+    quickPayments.addEventListener('touchstart', e => {
+      startX = e.touches[0].clientX;
+    });
+    quickPayments.addEventListener('touchmove', e => {
+      const moveX = e.touches[0].clientX;
+      const diff = startX - moveX;
+      quickPayments.scrollLeft += diff;
+      startX = moveX;
+    });
+  </script>
+
+</body>
+</html>
