@@ -406,9 +406,228 @@
       font-weight: bold;
     }
 
+    .visit-banner {
+  background: linear-gradient(135deg, #ff3b30, #ff6b6b);
+  color: white;
+  text-align: center;
+  padding: 12px;
+  margin: 16px;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+ .visit-bank-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ff3b30;
+  color: white;
+  border: none;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+
     /* Прокрутка */
     ::-webkit-scrollbar {
       display: none;
+    }
+    /* Голосовой ассистент */
+    .voice-btn {
+      position: fixed;
+      right: 16px;
+      bottom: 88px; /* чуть выше нижней навигации */
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background-color: #ff3b30;
+      color: #fff;
+      border: none;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1100;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+      cursor: pointer;
+    }
+    .voice-btn.listening {
+      background-color: #00c853;
+      box-shadow: 0 0 0 0 rgba(0,200,83,0.7);
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      to { box-shadow: 0 0 0 16px rgba(0,200,83,0); }
+    }
+    /* Модалка записи визита */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: flex-end;
+      z-index: 1200;
+    }
+    .modal-overlay.show {
+      display: flex;
+      animation: fadeIn 0.3s ease-out;
+    }
+    .modal {
+      width: 100%;
+      background: #1c1c1c;
+      border-radius: 20px 20px 0 0;
+      box-shadow: 0 -8px 32px rgba(0,0,0,0.4);
+      overflow: hidden;
+      transform: translateY(100%);
+      transition: transform 0.3s ease-out;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-overlay.show .modal {
+      transform: translateY(0);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid #333;
+      position: relative;
+    }
+    .modal-header::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 4px;
+      background: #555;
+      border-radius: 2px;
+    }
+    .modal-title { 
+      font-weight: 600; 
+      font-size: 18px; 
+      color: #fff;
+      margin-left: 20px;
+    }
+    .modal-close { 
+      cursor: pointer; 
+      font-size: 24px; 
+      color: #bbb; 
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background-color 0.2s;
+    }
+    .modal-close:hover { background-color: #333; }
+    .modal-body { 
+      padding: 20px; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 20px;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .step { display: none; }
+    .step.active { display: block; }
+    .field { display: flex; flex-direction: column; gap: 8px; }
+    .field label { font-size: 15px; color: #ddd; font-weight: 500; }
+    .row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .chip { 
+      padding: 16px 12px; 
+      border-radius: 12px; 
+      background: #2d2d2d; 
+      color: #fff; 
+      font-size: 14px; 
+      cursor: pointer; 
+      user-select: none;
+      text-align: center;
+      border: 2px solid transparent;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      min-height: 80px;
+      justify-content: center;
+    }
+    .chip:hover { background: #3a3a3a; }
+    .chip.active { 
+      background: #ff3b30; 
+      border-color: #ff3b30;
+      transform: scale(1.02);
+    }
+    .chip-icon {
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+    .input, .select, .textarea, .date-input { 
+      background: #2d2d2d; 
+      color: #fff; 
+      border: 2px solid #333; 
+      border-radius: 12px; 
+      padding: 14px 16px; 
+      font-size: 15px; 
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .input:focus, .select:focus, .textarea:focus, .date-input:focus {
+      border-color: #ff3b30;
+    }
+    .textarea { min-height: 100px; resize: vertical; }
+    .modal-footer { 
+      display: flex; 
+      gap: 12px; 
+      padding: 20px; 
+      border-top: 1px solid #333;
+      background: #1c1c1c;
+    }
+    .btn { 
+      flex: 1; 
+      text-align: center; 
+      padding: 16px; 
+      border-radius: 12px; 
+      cursor: pointer; 
+      font-weight: 600;
+      font-size: 16px;
+      transition: all 0.2s ease;
+      border: none;
+    }
+    .btn.secondary { 
+      background: #2d2d2d; 
+      color: #ddd; 
+      border: 2px solid #333;
+    }
+    .btn.secondary:hover { background: #3a3a3a; }
+    .btn.primary { 
+      background: #ff3b30; 
+      color: #fff;
+    }
+    .btn.primary:hover { 
+      background: #e6342a;
+      transform: translateY(-1px);
+    }
+    .error { color: #ff7676; font-size: 13px; margin-top: 4px; }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @media (min-width: 768px) { 
+      .modal { 
+        max-width: 500px;
+        margin: 0 auto;
+        border-radius: 20px;
+      }
+      .row { grid-template-columns: repeat(3, 1fr); }
     }
   </style>
 </head>
@@ -416,12 +635,12 @@
 
   <!-- Шапка -->
   <div class="header">
-    <div class="user-info">
-      <div class="avatar">👤</div>
-      <div class="username">Игорь</div>
-    </div>
-    <div class="add-btn">+</div>
+  <div class="user-info">
+    <div class="avatar">👤</div>
+    <div class="username">Игорь</div>
   </div>
+    <div class="add-btn">+</div>
+</div>
 
   <!-- Счета -->
   <div class="accounts">
@@ -433,6 +652,10 @@
         <i>⚡</i> Действуют ограничения
       </div>
     </div>
+
+<div class="visit-banner" id="openVisit">
+  <span>🏦 Прийти в банк</span>
+</div> 
 
     <div class="account-card">
       <div class="account-title">Текущий счёт</div>
@@ -448,6 +671,123 @@
     <div class="scan-btn">📷</div>
   </div>
 
+  <!-- Модальное окно записи визита -->
+  <div class="modal-overlay" id="visitModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Запланировать визит</div>
+        <div class="modal-close" id="visitClose">×</div>
+      </div>
+      <div class="modal-body">
+        <!-- Шаг 1: Особенности/статус -->
+        <div class="step active" data-step="1">
+          <div class="field">
+            <label>Укажите особенности / статус</label>
+            <div class="row" id="statusChips">
+              <div class="chip" data-value="ovz">
+                <div class="chip-icon">♿</div>
+                <div>Человек с ОВЗ</div>
+              </div>
+              <div class="chip" data-value="pensioner">
+                <div class="chip-icon">👴</div>
+                <div>Пенсионер</div>
+              </div>
+              <div class="chip" data-value="business">
+                <div class="chip-icon">💼</div>
+                <div>Бизнесмен</div>
+              </div>
+              <div class="chip" data-value="individual">
+                <div class="chip-icon">👤</div>
+                <div>Физическое лицо</div>
+              </div>
+              <div class="chip" data-value="alfa-only">
+                <div class="chip-icon">⭐</div>
+                <div>Подписчик Alfa Only</div>
+              </div>
+              <div class="chip" data-value="community">
+                <div class="chip-icon">👥</div>
+                <div>Участник комьюнити Альфы</div>
+              </div>
+            </div>
+          </div>
+          <div class="field" id="ovzDetailsField" style="display:none;">
+            <label>ОВЗ — уточните особенности</label>
+            <textarea class="textarea" id="ovzDetails" placeholder="Например: нужна пандусная доступность, тише обстановка и т.д."></textarea>
+          </div>
+          <div class="error" id="step1Error" style="display:none;"></div>
+        </div>
+
+        <!-- Шаг 2: Вопрос/цель визита -->
+        <div class="step" data-step="2">
+          <div class="field">
+            <label>Выберите тему визита</label>
+            <div class="row" id="topicChips">
+              <div class="chip" data-value="accounts">
+                <div class="chip-icon">💳</div>
+                <div>Счета и карты</div>
+              </div>
+              <div class="chip" data-value="credit">
+                <div class="chip-icon">📊</div>
+                <div>Кредитные продукты</div>
+              </div>
+              <div class="chip" data-value="deposits">
+                <div class="chip-icon">🏦</div>
+                <div>Вклады</div>
+              </div>
+              <div class="chip" data-value="invest-insure">
+                <div class="chip-icon">📈</div>
+                <div>Инвестиционные и страховые продукты</div>
+              </div>
+              <div class="chip" data-value="other">
+                <div class="chip-icon">⚙️</div>
+                <div>Другие операции</div>
+              </div>
+              <div class="chip" data-value="event">
+                <div class="chip-icon">🎪</div>
+                <div>Регистрация на мероприятие</div>
+              </div>
+            </div>
+          </div>
+          <div class="field" id="otherDetailsField" style="display:none;">
+            <label>Уточните, какие операции</label>
+            <textarea class="textarea" id="otherDetails" placeholder="Опишите кратко вашу задачу"></textarea>
+          </div>
+          <div class="error" id="step2Error" style="display:none;"></div>
+        </div>
+
+        <!-- Шаг 3: Дата и офис -->
+        <div class="step" data-step="3">
+          <div class="field">
+            <label>Дата визита</label>
+            <input type="date" class="date-input" id="visitDate">
+          </div>
+          <div class="field">
+            <label>Адрес офиса</label>
+            <select class="select" id="officeSelect">
+              <option value="">Выберите офис</option>
+              <option>г. Москва, ул. Лесная, 5</option>
+              <option>г. Москва, пр-т Мира, 12</option>
+              <option>г. Санкт-Петербург, Невский пр-т, 28</option>
+              <option>г. Казань, ул. Баумана, 7</option>
+            </select>
+          </div>
+          <div class="error" id="step3Error" style="display:none;"></div>
+        </div>
+
+        <!-- Шаг 4: Подтверждение -->
+        <div class="step" data-step="4">
+          <div class="field">
+            <label>Проверьте данные</label>
+            <div id="confirmSummary" style="font-size:15px; color:#ddd; line-height:1.5; background: #2d2d2d; padding: 16px; border-radius: 12px;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="btn secondary" id="prevStep">Назад</div>
+        <div class="btn primary" id="nextStep">Далее</div>
+      </div>
+    </div>
+  </div>
   <!-- Деньги вам и друзьям -->
   <div class="section-title">Деньги вам и друзьям</div>
   <div class="cards-container">
@@ -647,6 +987,7 @@
   </div>
 
 
+  <button class="voice-btn" id="voiceBtn" title="Голосовой ассистент">🎤</button>
    <div class="bottom-nav">
     <div class="nav-item">
       <a href="index.html"  class="nav-icon">🏠</a>
@@ -750,6 +1091,171 @@
     });
 
     let startY;
+
+    // Голосовой ассистент (Web Speech API)
+    (function(){
+      const btn = document.getElementById('voiceBtn');
+      if (!btn) return;
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      let recognition;
+      let listening = false;
+
+      function navigateByCommand(cmd) {
+        const t = (cmd || '').toLowerCase();
+        if (t.includes('глав')) location.href = 'index.html';
+        else if (t.includes('платеж')) location.href = 'platezi.html';
+        else if (t.includes('выгод')) location.href = 'vigoda.html';
+        else if (t.includes('истор')) location.href = 'history.html';
+        else if (t.includes('чат')) location.href = 'chats.html';
+        else alert('Команда не распознана: ' + cmd);
+      }
+
+      if (SR) {
+        recognition = new SR();
+        recognition.lang = 'ru-RU';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        recognition.onresult = (e) => {
+          const text = e.results[0][0].transcript;
+          navigateByCommand(text);
+        };
+        recognition.onend = () => {
+          listening = false;
+          btn.classList.remove('listening');
+        };
+      } else {
+        btn.addEventListener('click', () => {
+          alert('Распознавание речи не поддерживается в этом браузере');
+        });
+        return;
+      }
+
+      btn.addEventListener('click', () => {
+        if (listening) {
+          try { recognition.stop(); } catch(e) {}
+          listening = false;
+          btn.classList.remove('listening');
+        } else {
+          try { recognition.start(); } catch(e) {}
+          listening = true;
+          btn.classList.add('listening');
+        }
+      });
+    })();
+
+    // Модалка визита: логика шагов
+    (function(){
+      const openBtn = document.getElementById('openVisit');
+      const overlay = document.getElementById('visitModal');
+      const closeBtn = document.getElementById('visitClose');
+      const prevBtn = document.getElementById('prevStep');
+      const nextBtn = document.getElementById('nextStep');
+      const steps = Array.from(document.querySelectorAll('.modal .step'));
+      let stepIndex = 0;
+
+      const state = { statuses: [], ovzDetails: '', topic: '', otherDetails: '', date: '', office: '' };
+
+      function showStep(i){
+        steps.forEach((s,idx)=> s.classList.toggle('active', idx===i));
+        prevBtn.style.visibility = i===0 ? 'hidden' : 'visible';
+        nextBtn.textContent = i === steps.length-1 ? 'Подтвердить' : 'Далее';
+      }
+
+      function validateStep(i){
+        if (i===0){
+          const err = document.getElementById('step1Error');
+          if (state.statuses.length===0){ err.style.display='block'; err.textContent='Выберите хотя бы один вариант'; return false; }
+          if (state.statuses.includes('ovz') && !state.ovzDetails.trim()){ err.style.display='block'; err.textContent='Пожалуйста, уточните особенности ОВЗ'; return false; }
+          err.style.display='none'; return true;
+        }
+        if (i===1){
+          const err = document.getElementById('step2Error');
+          if (!state.topic){ err.style.display='block'; err.textContent='Выберите тему визита'; return false; }
+          if (state.topic==='other' && !state.otherDetails.trim()){ err.style.display='block'; err.textContent='Опишите, какие операции'; return false; }
+          err.style.display='none'; return true;
+        }
+        if (i===2){
+          const err = document.getElementById('step3Error');
+          if (!state.date){ err.style.display='block'; err.textContent='Укажите дату визита'; return false; }
+          if (!state.office){ err.style.display='block'; err.textContent='Выберите офис'; return false; }
+          err.style.display='none'; return true;
+        }
+        return true;
+      }
+
+      function fillSummary(){
+        const el = document.getElementById('confirmSummary');
+        const statusesLabel = state.statuses.join(', ') || '—';
+        const topicMap = {
+          accounts: 'Счета и карты', credit: 'Кредитные продукты', deposits: 'Вклады',
+          'invest-insure': 'Инвестиционные и страховые продукты', other: 'Другие операции', event: 'Регистрация на мероприятие'
+        };
+        const topicLabel = topicMap[state.topic] || '—';
+        el.innerHTML =
+          'Статус: ' + statusesLabel + '<br/>' +
+          (state.statuses.includes('ovz') && state.ovzDetails ? ('ОВЗ: ' + state.ovzDetails + '<br/>') : '') +
+          'Тема: ' + topicLabel + (state.topic==='other' && state.otherDetails ? (' — ' + state.otherDetails) : '') + '<br/>' +
+          'Дата: ' + state.date + '<br/>' +
+          'Офис: ' + state.office;
+      }
+
+      function openModal(){
+        overlay.style.display = 'flex';
+        setTimeout(() => overlay.classList.add('show'), 10);
+        stepIndex = 0;
+        showStep(stepIndex);
+      }
+
+      function closeModal(){
+        overlay.classList.remove('show');
+        setTimeout(() => overlay.style.display = 'none', 300);
+      }
+
+      // chips: статус
+      const statusChips = document.getElementById('statusChips');
+      const ovzField = document.getElementById('ovzDetailsField');
+      statusChips.addEventListener('click', (e)=>{
+        const chip = e.target.closest('.chip'); if (!chip) return;
+        const val = chip.getAttribute('data-value');
+        chip.classList.toggle('active');
+        if (chip.classList.contains('active')) state.statuses.push(val); else state.statuses = state.statuses.filter(v=>v!==val);
+        ovzField.style.display = state.statuses.includes('ovz') ? 'block' : 'none';
+      });
+      document.getElementById('ovzDetails').addEventListener('input', (e)=> state.ovzDetails = e.target.value);
+
+      // chips: тема
+      const topicChips = document.getElementById('topicChips');
+      const otherField = document.getElementById('otherDetailsField');
+      topicChips.addEventListener('click', (e)=>{
+        const chip = e.target.closest('.chip'); if (!chip) return;
+        topicChips.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+        chip.classList.add('active');
+        state.topic = chip.getAttribute('data-value');
+        otherField.style.display = state.topic==='other' ? 'block' : 'none';
+      });
+      document.getElementById('otherDetails').addEventListener('input', (e)=> state.otherDetails = e.target.value);
+
+      // дата и офис
+      document.getElementById('visitDate').addEventListener('change', (e)=> state.date = e.target.value);
+      document.getElementById('officeSelect').addEventListener('change', (e)=> state.office = e.target.value);
+
+      // управление шагами
+      openBtn.addEventListener('click', openModal);
+      closeBtn.addEventListener('click', closeModal);
+      overlay.addEventListener('click', (e)=>{ if (e.target === overlay) closeModal(); });
+      prevBtn.addEventListener('click', ()=>{ if (stepIndex>0){ stepIndex--; showStep(stepIndex); } });
+      nextBtn.addEventListener('click', ()=>{
+        if (!validateStep(stepIndex)) return;
+        if (stepIndex < steps.length-1){
+          stepIndex++;
+          if (stepIndex === steps.length-1) fillSummary();
+          showStep(stepIndex);
+        } else {
+          closeModal();
+          alert('Визит запланирован!');
+        }
+      });
+    })();
   </script>
 
 </body>
