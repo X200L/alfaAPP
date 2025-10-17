@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Выгода</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #121212;
+      color: white;
+      padding: 0;
+      max-width: 400px;
+      margin: 0 auto;
+      overflow-x: hidden;
+    }
+
+    /* Шапка */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      background-color: #121212;
+    }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .search-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #2d2d2d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    /* Табы */
+    .tabs {
+      display: flex;
+      padding: 0 16px;
+      gap: 8px;
+      margin: 16px 0;
+    }
+
+    .tab {
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .tab.active {
+      background-color: white;
+      color: #121212;
+      font-weight: bold;
+    }
+
+    /* Карточки предложений */
+    .offers-container {
+      padding: 0 16px 16px;
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+    }
+
+    .offer-card {
+      min-width: 300px;
+      background-color: #2d2d2d;
+      border-radius: 12px;
+      padding: 16px;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+
+    .offer-card:active {
+      transform: scale(0.98);
+    }
+
+    .offer-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .offer-desc {
+      font-size: 14px;
+      color: #ccc;
+      margin-bottom: 16px;
+    }
+
+    .offer-stats {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+      font-size: 12px;
+    }
+
+    .stat-item {
+      background-color: #333;
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+
+    .offer-image {
+      position: absolute;
+      right: 16px;
+      bottom: 16px;
+      width: 80px;
+      height: 80px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    .offer-image.airplane {
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzU1MDAwMCIgZD0iTTEyIDJjLTUuNTIgMC0xMCA0LjQ4LTEwIDEwczQuNDggMTAgMTAgMTBzMTAtNC40OCAxMC0xMHMtNC40OC0xMC0xMC0xMHptLTEgMTVjLTUuNSAwLTkgNC41LTkgOS41aC0ydjEyaDIwdi0xaC0ydjEtOWgtMWwtMi0ydi0xYzAtMS4xMS0uODktMi0yLTIuOTFMMTAgMTMuMDlsLTMtMy4wOXoiLz48L3N2Zz4=');
+    }
+
+    /* Раздел Кэшбэк */
+    .section-title {
+      padding: 16px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #ddd;
+    }
+
+    .cashback-card {
+      background-color: #2d2d2d;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 0 16px 16px;
+    }
+
+    .cashback-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .cashback-label {
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    .cashback-info-icon {
+      font-size: 14px;
+      color: #888;
+      cursor: pointer;
+    }
+
+    .cashback-balance {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .spend-btn {
+      background-color: white;
+      color: #121212;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-weight: bold;
+      text-align: center;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .cashback-action {
+      background-color: #003366;
+      padding: 12px 16px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      cursor: pointer;
+    }
+
+    .cashback-action-text {
+      font-size: 14px;
+    }
+
+    .arrow-right {
+      font-size: 16px;
+    }
+
+    .cashback-note {
+      background-color: #2d2d2d;
+      padding: 16px;
+      border-radius: 12px;
+      margin: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .note-emoji {
+      font-size: 24px;
+    }
+
+    .note-text {
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    /* Действия внизу */
+    .actions-row {
+      display: flex;
+      padding: 16px;
+      gap: 8px;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: bold;
+      text-align: center;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .action-btn:active {
+      opacity: 0.8;
+    }
+
+    .action-btn.select {
+      background-color: #ffcccc;
+      color: #333;
+    }
+
+    .action-btn.receive {
+      background-color: #cce5ff;
+      color: #333;
+    }
+
+    .badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background-color: #ff3b30;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    /* Нижняя панель навигации */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #121212;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      border-top: 1px solid #333;
+      z-index: 1000;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 8px;
+      transition: color 0.2s;
+    }
+
+    .nav-item.active {
+      color: #007aff;
+    }
+
+    .nav-icon {
+      font-size: 20px;
+    }
+
+    .nav-label {
+      font-size: 12px;
+      text-align: center;
+    }
+
+    /* Прокрутка */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Шапка -->
+  <div class="header">
+    <div class="page-title">Выгода</div>
+    <div class="search-btn">🔍</div>
+  </div>
+
+  <!-- Табы -->
+  <div class="tabs">
+    <div class="tab active">Всё</div>
+    <div class="tab">Предложения</div>
+    <div class="tab">Кэшбэк и сервисы</div>
+  </div>
+
+  <!-- Предложения -->
+  <div class="section-title">Предложения</div>
+  <div class="offers-container">
+    <div class="offer-card">
+      <div class="offer-title">Деньги на что угодно</div>
+      <div class="offer-desc">Оформить заявку онлайн</div>
+      <div class="offer-stats">
+        <div class="stat-item">30 млн</div>
+        <div class="stat-item">15 лет</div>
+      </div>
+      <div class="offer-image airplane"></div>
+    </div>
+    <div class="offer-card" style="background-color: #4d774d;">
+      <div class="offer-title">Кредитная карта</div>
+      <div class="offer-desc">60 дней на все покупки</div>
+      <div class="offer-stats">
+        <div class="stat-item">лимит</div>
+      </div>
+      <div class="offer-image" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzAwMDAwMCIgZD0iTTEyIDJjLTUuNTIgMC0xMCA0LjQ4LTEwIDEwczQuNDggMTAgMTAgMTBzMTAtNC40OCAxMC0xMHMtNC40OC0xMC0xMC0xMHptLTEgMTVjLTUuNSAwLTkgNC41LTkgOS41aC0ydjEyaDIwdi0xaC0ydjEtOWgtMWwtMi0ydi0xYzAtMS4xMS0uODktMi0yLTIuOTFMMTAgMTMuMDlsLTMtMy4wOXoiLz48L3N2Zz4=');"></div>
+    </div>
+  </div>
+
+  <!-- Кэшбэк -->
+  <div class="section-title">Кэшбэк</div>
+  <div class="cashback-card">
+    <div class="cashback-header">
+      <div class="cashback-label">Баланс <span class="cashback-info-icon">ℹ️</span></div>
+      <div class="spend-btn">Потратить</div>
+    </div>
+    <div class="cashback-balance">512 ₽</div>
+    <div class="cashback-action">
+      <div class="cashback-action-text">Покупайте и получайте кэшбэк</div>
+      <div class="arrow-right">›</div>
+    </div>
+  </div>
+
+  <div class="cashback-note">
+    <div class="note-emoji">😊</div>
+    <div class="note-text">Кэшбэк от банка, доходы от накоплений и рекомендаций — в разделе Моя выгода</div>
+  </div>
+
+  <!-- Действия внизу -->
+  <div class="actions-row">
+    <div class="action-btn select">
+      Выберите
+      <div class="badge">1</div>
+    </div>
+    <div class="action-btn receive">
+      Получите
+    </div>
+  </div>
+
+  <!-- Нижняя навигация -->
+  <div class="bottom-nav">
+    <div class="nav-item">
+      <a href="index.html" class="nav-icon">🏠</a>
+      <div class="nav-label">Главная</div>
+    </div>
+    <div class="nav-item">
+      <a href="platezi.html" class="nav-icon">💸</a>
+      <div class="nav-label">Платежи</div>
+      <div class="badge">2</div>
+    </div>
+    <div class="nav-item active">
+      <a href="vigoda.html" class="nav-icon">❤️</a>
+      <div class="nav-label">Выгода</div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">⏱️</div>
+      <div class="nav-label">История</div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">💬</div>
+      <div class="nav-label">Чаты</div>
+    </div>
+  </div>
+
+  <script>
+    // Активация вкладки "Выгода"
+    document.querySelector('.nav-item:nth-child(3)').classList.add('active');
+
+    // Табы
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+
+    // При клике на предложение
+    document.querySelectorAll('.offer-card').forEach(card => {
+      card.addEventListener('click', () => {
+        alert('Переход к деталям предложения');
+      });
+    });
+
+    // При клике на кэшбэк-действие
+    document.querySelector('.cashback-action').addEventListener('click', () => {
+      alert('Переход к программе кэшбэка');
+    });
+
+    document.querySelector('.cashback-note').addEventListener('click', () => {
+      alert('Открытие раздела "Моя выгода"');
+    });
+
+    // Действия внизу
+    document.querySelector('.action-btn.select').addEventListener('click', () => {
+      alert('Выбрать предложение');
+    });
+
+    document.querySelector('.action-btn.receive').addEventListener('click', () => {
+      alert('Получить выгоду');
+    });
+
+    // Поиск
+    document.querySelector('.search-btn').addEventListener('click', () => {
+      alert('Поиск по выгодам и предложениям');
+    });
+
+    // Прокрутка предложений
+    const offersContainer = document.querySelector('.offers-container');
+    let startX;
+
+    offersContainer.addEventListener('touchstart', e => {
+      startX = e.touches[0].clientX;
+    });
+
+    offersContainer.addEventListener('touchmove', e => {
+      const moveX = e.touches[0].clientX;
+      const diff = startX - moveX;
+      offersContainer.scrollLeft += diff;
+      startX = moveX;
+    });
+  </script>
+
+</body>
+</html>
