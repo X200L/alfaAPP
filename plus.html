@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Альфа-Банк</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #121212;
+      color: white;
+      padding: 0;
+      max-width: 400px;
+      margin: 0 auto;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      padding-bottom: 80px;
+    }
+
+    /* Верхняя панель (статус-бар) */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      background-color: #121212;
+      font-size: 16px;
+    }
+
+    .back-arrow {
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .status-info {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .status-info i {
+      font-size: 16px;
+    }
+
+    /* Основной контент */
+    .container {
+      padding: 20px;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    /* Список опций */
+    .options-list {
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .option-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .option-item:hover {
+      background-color: #2d2d2d;
+      border-radius: 8px;
+    }
+
+    .option-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin-right: 12px;
+    }
+
+    .option-icon.card {
+      background-color: #ff3b30;
+      color: white;
+    }
+
+    .option-icon.account {
+      background-color: #4caf50;
+      color: white;
+    }
+
+    .option-icon.savings {
+      background-color: #66bb6a;
+      color: white;
+    }
+
+    .option-icon.invest {
+      background-color: #9c27b0;
+      color: white;
+    }
+
+    .option-icon.business {
+      background-color: #3f51b5;
+      color: white;
+    }
+
+    .option-text {
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    /* Раздел "Возможности" */
+    .section-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .opportunities-container {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 16px;
+      scroll-behavior: smooth;
+    }
+
+    .opportunity-card {
+      min-width: 180px;
+      height: 160px;
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+
+    .opportunity-card:active {
+      transform: scale(0.98);
+    }
+
+    .opportunity-card.gradient {
+      background: linear-gradient(135deg, #e0e0e0, #ffffff);
+      color: #333;
+    }
+
+    .opportunity-card.blue {
+      background: linear-gradient(135deg, #a8e6cf, #dcedc1);
+      color: #333;
+    }
+
+    .opportunity-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .opportunity-subtitle {
+      font-size: 14px;
+      opacity: 0.8;
+      margin-bottom: 8px;
+    }
+
+    .opportunity-image {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      margin-top: auto;
+    }
+
+    .opportunity-image.alphacard {
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzMzMyIgZD0iTTEyIDJjLTUuNTIgMC0xMCA0LjQ4LTEwIDEwczQuNDggMTAgMTAgMTBzMTAtNC40OCAxMC0xMHMtNC40OC0xMC0xMC0xMHptLTEgMTVjLTUuNSAwLTkgNC41LTkgOS41aC0ydjEyaDIwdi0xaC0ydjEtOWgtMWwtMi0ydi0xYzAtMS4xMS0uODktMi0yLTIuOTFMMTAgMTMuMDlsLTMtMy4wOXoiLz48L3N2Zz4=');
+    }
+
+    .opportunity-image.corporate {
+      background-color: #ff3b30;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .opportunity-image.corporate::after {
+      content: '+';
+      font-size: 20px;
+      position: absolute;
+      top: 50%;
+      right: -10px;
+      transform: translateY(-50%);
+      background-color: #4caf50;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Нижняя панель навигации */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #121212;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      border-top: 1px solid #333;
+      z-index: 1000;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 8px;
+      transition: color 0.2s;
+    }
+
+    .nav-item.active {
+      color: #007aff;
+    }
+
+    .nav-icon {
+      font-size: 20px;
+    }
+
+    .nav-label {
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background-color: #ff3b30;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    /* Прокрутка */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Основной контент -->
+  <div class="container">
+    <h1 class="page-title">Что вас интересует?</h1>
+
+    <!-- Список опций -->
+    <div class="options-list">
+      <div class="option-item">
+        <div class="option-icon card">💳</div>
+        <div class="option-text">Карта</div>
+      </div>
+      <div class="option-item">
+        <div class="option-icon account">💰</div>
+        <div class="option-text">Счёт</div>
+      </div>
+      <div class="option-item">
+        <div class="option-icon savings">📈</div>
+        <div class="option-text">Накопления</div>
+      </div>
+      <div class="option-item">
+        <div class="option-icon invest">📊</div>
+        <div class="option-text">Инвестиции</div>
+      </div>
+      <div class="option-item">
+        <div class="option-icon business">💼</div>
+        <div class="option-text">Бизнесу и Самозанятым</div>
+      </div>
+    </div>
+
+    <!-- Раздел "Возможности" -->
+    <div class="section-title">Возможности</div>
+    <div class="opportunities-container">
+      <div class="opportunity-card gradient">
+        <div class="opportunity-title">Стать клиентом Alfa Only</div>
+        <div class="opportunity-image alphacard"></div>
+      </div>
+      <div class="opportunity-card blue">
+        <div class="opportunity-title">Добавить корпоративную карту</div>
+        <div class="opportunity-image corporate">A</div>
+      </div>
+      <!-- Можно добавить еще карточки по аналогии -->
+    </div>
+  </div>
+
+  <!-- Нижняя панель навигации -->
+  <div class="bottom-nav">
+    <div class="nav-item">
+      <a href="index.html"  class="nav-icon">🏠</a>
+      <div class="nav-label">Главная</div>
+    </div>
+    <div class="nav-item">
+      <a href="platezi.html" class="nav-icon">💸</a>
+      <div class="nav-label">Платежи</div>
+    </div>
+    <div class="nav-item">
+      <a href="vigoda.html" class="nav-icon">❤️</a>
+      <div class="nav-label">Выгода</div>
+    </div>
+    <div class="nav-item">
+      <a href="history.html" class="nav-icon">⏱️</a>
+      <div class="nav-label">История</div>
+    </div>
+    <div class="nav-item active">
+      <a href="chats.html" class="nav-icon">💬</a>
+      <div class="nav-label">Чаты</div>
+    </div>
+  </div>
+
+  <script>
+    // Активация вкладки "Главная"
+    document.querySelector('.nav-item:nth-child(1)').classList.add('active');
+
+    // При клике на пункты списка
+    document.querySelectorAll('.option-item').forEach(item => {
+      item.addEventListener('click', () => {
+        alert(`Вы выбрали: ${item.querySelector('.option-text').textContent}`);
+      });
+    });
+
+    // При клике на карточки возможностей
+    document.querySelectorAll('.opportunity-card').forEach(card => {
+      card.addEventListener('click', () => {
+        alert('Переход к подробностям');
+      });
+    });
+
+    // Прокрутка карточек
+    const opportunitiesContainer = document.querySelector('.opportunities-container');
+    let startX;
+    opportunitiesContainer.addEventListener('touchstart', e => {
+      startX = e.touches[0].clientX;
+    });
+    opportunitiesContainer.addEventListener('touchmove', e => {
+      const moveX = e.touches[0].clientX;
+      const diff = startX - moveX;
+      opportunitiesContainer.scrollLeft += diff;
+      startX = moveX;
+    });
+  </script>
+</body>
+</html>
