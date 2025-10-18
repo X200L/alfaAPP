@@ -507,6 +507,25 @@
 
   </div>
 
+  </div>
+
+  <!-- Голосовой ассистент -->
+  <button class="voice-btn" id="voiceBtn" title="Голосовой ассистент"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12,14c1.66,0 2.99-1.34 2.99-3L15,5c0-1.66-1.34-3-3-3S9,3.34 9,5v6c0,1.66 1.34,3 3,3zm5.3-3c0,3-2.54,5.1-5.3,5.1S6.7,14 6.7,11H5c0,3.41 2.72,6.23 6,6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg></button>
+
+  <!-- Модальное окно голосового ассистента -->
+  <div class="voice-modal-overlay" id="voiceModal">
+    <div class="voice-modal">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="voice-modal-icon" id="voiceModalIcon"><path d="M12,14c1.66,0 2.99-1.34 2.99-3L15,5c0-1.66-1.34-3-3-3S9,3.34 9,5v6c0,1.66 1.34,3 3,3zm5.3-3c0,3-2.54,5.1-5.3,5.1S6.7,14 6.7,11H5c0,3.41 2.72,6.23 6,6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+      <div class="voice-modal-title" id="voiceModalTitle">Альфа-ассистент</div>
+      <div class="voice-modal-subtitle" id="voiceModalSubtitle">Скажите команду для навигации</div>
+      <div class="voice-modal-text" id="voiceModalText">Говорите...</div>
+      <div class="voice-modal-actions">
+        <button class="voice-btn-small secondary" id="voiceCancel">Отмена</button>
+        <button class="voice-btn-small primary" id="voiceStop" style="display:none;">Остановить</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Нижняя навигация -->
   <div class="bottom-nav">
     <div class="nav-item">
@@ -582,39 +601,117 @@
 
     // Голосовой ассистент (Web Speech API)
     (function(){
-      const btn = document.createElement('button');
-      btn.className = 'voice-btn';
-      btn.id = 'voiceBtn';
-      btn.title = 'Голосовой ассистент';
-      btn.textContent = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12,14c1.66,0 2.99-1.34 2.99-3L15,5c0-1.66-1.34-3-3-3S9,3.34 9,5v6c0,1.66 1.34,3 3,3zm5.3-3c0,3-2.54,5.1-5.3,5.1S6.7,14 6.7,11H5c0,3.41 2.72,6.23 6,6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>';
-      document.body.appendChild(btn);
-
+      const btn = document.getElementById('voiceBtn');
+      const modal = document.getElementById('voiceModal');
+      const modalIcon = document.getElementById('voiceModalIcon');
+      const modalTitle = document.getElementById('voiceModalTitle');
+      const modalSubtitle = document.getElementById('voiceModalSubtitle');
+      const modalText = document.getElementById('voiceModalText');
+      const cancelBtn = document.getElementById('voiceCancel');
+      const stopBtn = document.getElementById('voiceStop');
+      
+      if (!btn) return;
       const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
       let recognition;
       let listening = false;
 
+      function openVoiceModal() {
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('show'), 10);
+      }
+
+      function closeVoiceModal() {
+        modal.classList.remove('show');
+        setTimeout(() => modal.style.display = 'none', 300);
+      }
+
+      function updateModalState(isListening, text = '') {
+        if (isListening) {
+          modalIcon.classList.add('listening');
+          modalTitle.textContent = 'Слушаю...';
+          modalSubtitle.textContent = 'Говорите команду';
+          modalText.textContent = text || 'Говорите...';
+          cancelBtn.style.display = 'none';
+          stopBtn.style.display = 'block';
+        } else {
+          modalIcon.classList.remove('listening');
+          modalTitle.textContent = 'Альфа-ассистент';
+          modalSubtitle.textContent = 'Скажите команду для навигации';
+          modalText.textContent = text || 'Говорите...';
+          cancelBtn.style.display = 'block';
+          stopBtn.style.display = 'none';
+        }
+      }
+
       function navigateByCommand(cmd) {
         const t = (cmd || '').toLowerCase();
-        if (t.includes('глав')) location.href = 'index.html';
-        else if (t.includes('платеж')) location.href = 'platezi.html';
-        else if (t.includes('выгод')) location.href = 'vigoda.html';
-        else if (t.includes('истор')) location.href = 'history.html';
-        else if (t.includes('чат')) location.href = 'chats.html';
-        else alert('Команда не распознана: ' + cmd);
+        if (t.includes('глав')) {
+          modalText.textContent = 'Переход на главную...';
+          setTimeout(() => location.href = 'index.html', 1000);
+        } else if (t.includes('платеж')) {
+          modalText.textContent = 'Переход к платежам...';
+          setTimeout(() => location.href = 'platezi.html', 1000);
+        } else if (t.includes('выгод')) {
+          modalText.textContent = 'Переход к выгоде...';
+          setTimeout(() => location.href = 'vigoda.html', 1000);
+        } else if (t.includes('истор')) {
+          modalText.textContent = 'Переход к истории...';
+          setTimeout(() => location.href = 'history.html', 1000);
+        } else if (t.includes('чат')) {
+          modalText.textContent = 'Переход к чатам...';
+          setTimeout(() => location.href = 'chats.html', 1000);
+        } else {
+          modalText.textContent = 'Команда не распознана: ' + cmd;
+          setTimeout(() => closeVoiceModal(), 2000);
+        }
       }
 
       if (SR) {
         recognition = new SR();
         recognition.lang = 'ru-RU';
-        recognition.interimResults = false;
+        recognition.interimResults = true;
         recognition.maxAlternatives = 1;
-        recognition.onresult = (e) => {
-          const text = e.results[0][0].transcript;
-          navigateByCommand(text);
+        
+        recognition.onstart = () => {
+          listening = true;
+          btn.classList.add('listening');
+          updateModalState(true);
         };
+
+        recognition.onresult = (e) => {
+          let finalTranscript = '';
+          let interimTranscript = '';
+
+          for (let i = e.resultIndex; i < e.results.length; i++) {
+            const transcript = e.results[i][0].transcript;
+            if (e.results[i].isFinal) {
+              finalTranscript += transcript;
+            } else {
+              interimTranscript += transcript;
+            }
+          }
+
+          if (interimTranscript) {
+            modalText.textContent = interimTranscript;
+          }
+
+          if (finalTranscript) {
+            modalText.textContent = 'Распознано: ' + finalTranscript;
+            navigateByCommand(finalTranscript);
+          }
+        };
+
+        recognition.onerror = (e) => {
+          console.error('Speech recognition error:', e.error);
+          modalText.textContent = 'Ошибка распознавания: ' + e.error;
+          setTimeout(() => closeVoiceModal(), 2000);
+        };
+
         recognition.onend = () => {
           listening = false;
           btn.classList.remove('listening');
+          updateModalState(false);
+          setTimeout(() => closeVoiceModal(), 1000);
         };
       } else {
         btn.addEventListener('click', () => {
@@ -626,12 +723,23 @@
       btn.addEventListener('click', () => {
         if (listening) {
           try { recognition.stop(); } catch(e) {}
-          listening = false;
-          btn.classList.remove('listening');
         } else {
-          try { recognition.start(); } catch(e) {}
-          listening = true;
-          btn.classList.add('listening');
+          openVoiceModal();
+          updateModalState(false);
+        }
+      });
+
+      cancelBtn.addEventListener('click', () => {
+        closeVoiceModal();
+      });
+
+      stopBtn.addEventListener('click', () => {
+        try { recognition.stop(); } catch(e) {}
+      });
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeVoiceModal();
         }
       });
     })();
