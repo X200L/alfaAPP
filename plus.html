@@ -12,16 +12,16 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    body {
-      background-color: #121212;
-      color: white;
-      padding: 0;
-      max-width: 400px;
-      margin: 0 auto;
-      overflow-x: hidden;
-      scroll-behavior: smooth;
-      padding-bottom: 80px;
-    }
+   body {
+  background-color: #121212;
+  color: white;
+  padding: 0;
+  max-width: 400px;
+  margin: 0 auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  padding-bottom: 90px; /* ← увеличено до 90px для надёжности */
+}
 
     /* Верхняя панель (статус-бар) */
     .status-bar {
@@ -162,6 +162,11 @@
       color: #333;
     }
 
+    .opportunity-card.community {
+      background: linear-gradient(135deg, #d1c4e9, #bbdefb);
+      color: #333;
+    }
+
     .opportunity-title {
       font-size: 16px;
       font-weight: bold;
@@ -196,22 +201,117 @@
       font-size: 24px;
       font-weight: bold;
       color: white;
-    }
+    }  
 
-    .opportunity-image.corporate::after {
-      content: '+';
-      font-size: 20px;
-      position: absolute;
-      top: 50%;
-      right: -10px;
-      transform: translateY(-50%);
-      background-color: #4caf50;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
+    .opportunity-image.community {
+      background-color: #673ab7;
+      color: white;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    /* Модальное окно — Комьюнити */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: flex-end;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.show {
+      display: flex;
+      opacity: 1;
+      pointer-events: all;
+    }
+    .modal {
+      width: 100%;
+      background: #1c1c1c;
+      border-radius: 24px 24px 0 0;
+      padding: 24px;
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .modal-overlay.show .modal {
+      transform: translateY(0);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .modal-close {
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .modal-body {
+      color: #ddd;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    .field {
+      margin-bottom: 16px;
+    }
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #ccc;
+    }
+    .input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      background: #2d2d2d;
+      border: 1px solid #444;
+      color: white;
+      font-size: 15px;
+      outline: none;
+    }
+    .input:focus {
+      border-color: #ff3b30;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .checkbox-group input {
+      margin-top: 4px;
+      accent-color: #ff3b30;
+    }
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: bold;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn.secondary {
+      background: #2d2d2d;
+      color: #ddd;
+    }
+    .btn.primary {
+      background: #ff3b30;
+      color: white;
+    }
+    .btn:hover {
+      opacity: 0.9;
     }
 
     /* Нижняя панель навигации */
@@ -290,7 +390,7 @@
         <div class="option-text">Счёт</div>
       </div>
       <div class="option-item">
-        <a href="fingram.html" class="option-icon savings">📈</ф>
+        <div class="option-icon savings">📈</div>
         <div class="option-text">Накопления</div>
       </div>
       <div class="option-item">
@@ -308,20 +408,54 @@
     <div class="opportunities-container">
       <div class="opportunity-card gradient">
         <div class="opportunity-title">Стать клиентом Alfa Only</div>
-        <div class="opportunity-image alphacard"></div>
       </div>
       <div class="opportunity-card blue">
         <div class="opportunity-title">Добавить корпоративную карту</div>
         <div class="opportunity-image corporate">A</div>
       </div>
-      <!-- Можно добавить еще карточки по аналогии -->
+      <div class="opportunity-card community" id="joinCommunityBtn">
+        <div class="opportunity-title">Вступить в комьюнити</div>
+        <div class="opportunity-subtitle">Мероприятия и лекции</div>
+        <div class="opportunity-image community">👥</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно: Вступить в комьюнити -->
+  <div class="modal-overlay" id="communityModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Альфа-Комьюнити</div>
+        <div class="modal-close" id="communityClose">×</div>
+      </div>
+      <div class="modal-body">
+        Присоединяйтесь к сообществу клиентов Альфа-Банка! Участвуйте в эксклюзивных мероприятиях, лекциях, мастер-классах и нетворкингах. Узнавайте первыми о новых продуктах и получайте персональные приглашения.
+      </div>
+      <div class="field">
+        <label>Ваше имя</label>
+        <input type="text" class="input" id="communityName" placeholder="фио">
+      </div>
+      <div class="field">
+        <label>Телефон или email</label>
+        <input type="text" class="input" id="communityContact" placeholder="+7 999 123-45-67">
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="communityAgree">
+        <label for="communityAgree" style="font-size:13px; color:#ccc;">
+          Согласен на обработку персональных данных и получение уведомлений
+        </label>
+      </div>
+      <div class="btn-group">
+        <div class="btn secondary" id="communityCancel">Отмена</div>
+        <div class="btn primary" id="communitySubmit">Подать заявку</div>
+      </div>
     </div>
   </div>
 
   <!-- Нижняя панель навигации -->
   <div class="bottom-nav">
     <div class="nav-item">
-      <a href="index.html"  class="nav-icon">🏠</a>
+      <a href="index.html" class="nav-icon">🏠</a>
       <div class="nav-label">Главная</div>
     </div>
     <div class="nav-item">
@@ -344,21 +478,6 @@
 
   <script>
     // Активация вкладки "Главная"
-    document.querySelector('.nav-item:nth-child(1)').classList.add('active');
-
-    // При клике на пункты списка
-    document.querySelectorAll('.option-item').forEach(item => {
-      item.addEventListener('click', () => {
-        alert(`Вы выбрали: ${item.querySelector('.option-text').textContent}`);
-      });
-    });
-
-    // При клике на карточки возможностей
-    document.querySelectorAll('.opportunity-card').forEach(card => {
-      card.addEventListener('click', () => {
-        alert('Переход к подробностям');
-      });
-    });
 
     // Прокрутка карточек
     const opportunitiesContainer = document.querySelector('.opportunities-container');
@@ -371,6 +490,42 @@
       const diff = startX - moveX;
       opportunitiesContainer.scrollLeft += diff;
       startX = moveX;
+    });
+
+    // === Комьюнити модалка ===
+    const communityBtn = document.getElementById('joinCommunityBtn');
+    const modal = document.getElementById('communityModal');
+    const closeBtn = document.getElementById('communityClose');
+    const cancelBtn = document.getElementById('communityCancel');
+    const submitBtn = document.getElementById('communitySubmit');
+    const contactInput = document.getElementById('communityContact');
+    const agreeCheckbox = document.getElementById('communityAgree');
+
+    communityBtn.addEventListener('click', () => {
+      modal.classList.add('show');
+    });
+
+    function closeModal() {
+      modal.classList.remove('show');
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+    cancelBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    submitBtn.addEventListener('click', () => {
+      if (!contactInput.value.trim()) {
+        alert('Пожалуйста, укажите телефон или email');
+        return;
+      }
+      if (!agreeCheckbox.checked) {
+        alert('Необходимо согласие на обработку данных');
+        return;
+      }
+      alert('Заявка отправлена! Мы свяжемся с вами в ближайшее время.');
+      closeModal();
     });
   </script>
 </body>
