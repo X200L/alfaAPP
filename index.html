@@ -1143,26 +1143,6 @@
     // Активация вкладки "Главная"
     document.querySelector('.nav-item:nth-child(1)').classList.add('active');
 
-    // При клике на счета
-    document.querySelectorAll('.account-card').forEach(card => {
-      card.addEventListener('click', () => {
-        alert('Открывается детальная информация по счёту');
-      });
-    });
-
-    // При клике на карточки
-    document.querySelectorAll('.card').forEach(card => {
-      card.addEventListener('click', () => {
-        alert('Переход к акции или подробностям');
-      });
-    });
-
-    // При клике на иконки
-    document.querySelectorAll('.icon-item').forEach(item => {
-      item.addEventListener('click', () => {
-        alert('Переход к категории или партнеру');
-      });
-    });
 
     // При клике на поиск
     document.querySelector('.search-input').addEventListener('focus', () => {
